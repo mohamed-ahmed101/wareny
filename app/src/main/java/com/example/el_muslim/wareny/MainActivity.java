@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.example.el_muslim.wareny.helper.CheckNetworkStatus;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,18 +25,34 @@ public class MainActivity extends AppCompatActivity {
         storeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),storeActivity.class);
+                              //////////////////////////////////////
+                if (CheckNetworkStatus.isNetworkAvailable(getApplicationContext())) {
+                    Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    //Display error message if not connected to internet
+                    Toast.makeText(getApplicationContext(),
+                            "Unable to connect to internet",
+                            Toast.LENGTH_LONG).show();
 
-                startActivity(intent);
+                }
             }
         });
 
         customerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),customerActivity.class);
 
-                startActivity(intent);
+                if (CheckNetworkStatus.isNetworkAvailable(getApplicationContext())) {
+                    Intent intent = new Intent(getApplicationContext(),customerActivity.class);
+                    startActivity(intent);
+                } else {
+                    //Display error message if not connected to internet
+                    Toast.makeText(getApplicationContext(),
+                            "Unable to connect to internet",
+                            Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
