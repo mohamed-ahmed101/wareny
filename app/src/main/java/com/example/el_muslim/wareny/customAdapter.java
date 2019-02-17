@@ -57,7 +57,8 @@ public class customAdapter extends BaseAdapter {
 
         ImageView imageView = (ImageView) vi.findViewById(R.id.imageView);
 
-        imageView.setImageBitmap(image.get(position));
+      //  imageView.setImageBitmap(image.get(position));
+        imageView.setImageResource(R.drawable.addimage);
 
 
         return vi;

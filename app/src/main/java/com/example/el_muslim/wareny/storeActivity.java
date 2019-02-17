@@ -7,41 +7,42 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.el_muslim.wareny.categorymodel.AllCategoryFetch;
+import com.example.el_muslim.wareny.categorymodel.CategoryHelperAdd;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class storeActivity extends AppCompatActivity {
 
-    ListView categoriesLst;
-    ArrayList<String> categories;
+   ListView categoriesLst;
+   public  static   ArrayList<String> categoriesName;
+   public static   ArrayList<String> categoriesId;
     ArrayList<Bitmap> images;
-    customAdapter arrayAdapter;
+  public static   customAdapter arrayAdapter;
     ImageView imageView;
     EditText editText ;
+    CategoryHelperAdd categoryHelper;
 
+    int sup_id ;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,8 +56,6 @@ public class storeActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
         if(item.getItemId() == R.id.addCategory) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -81,7 +80,9 @@ public class storeActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if(!editText.getText().toString().isEmpty() ) {
-                        categories.add(editText.getText().toString());
+                        categoriesName.add(editText.getText().toString());
+                        categoryHelper = new CategoryHelperAdd(storeActivity.this);
+                        categoryHelper.AddCategory(editText.getText().toString(),String.valueOf(sup_id));
                         images.add(((BitmapDrawable)imageView.getDrawable()).getBitmap());
                         arrayAdapter.notifyDataSetChanged();
                     }
@@ -100,17 +101,27 @@ public class storeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
-
         images = new ArrayList<Bitmap>();
-
-
+        sup_id = getIntent().getIntExtra("supplier_id",0);
+        categoryHelper = new CategoryHelperAdd(storeActivity.this);
         categoriesLst = (ListView) findViewById(R.id.categoriesListView);
-        categories = new ArrayList<String>();
-        arrayAdapter = new customAdapter(this,categories,images);
+        categoriesName = new ArrayList<String>();
+        categoriesId = new ArrayList<String>();
+
+        try {
+            String r = new AllCategoryFetch(storeActivity.this,sup_id).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        // this.categoriesName = AllCategoryFetch.categoriesName;
+       // this.categoriesId = AllCategoryFetch.categoriesId;
+        arrayAdapter = new customAdapter(this,categoriesName,images);
         categoriesLst.setAdapter(arrayAdapter);
-
-
-
+        arrayAdapter.notifyDataSetChanged();
         //click to add items
         categoriesLst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -118,7 +129,7 @@ public class storeActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(),catItemsActivity.class);
 
-                intent.putExtra("title",categories.get(position));
+                intent.putExtra("title",categoriesName.get(position));
 
                 startActivity(intent);
 
@@ -153,13 +164,13 @@ public class storeActivity extends AppCompatActivity {
                     }
                 });
 
-                editText.setText(categories.get(position));
+                editText.setText(categoriesName.get(position));
                 editText.setSelection(editText.getText().length());
 
                 alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        categories.set(position,editText.getText().toString());
+                        categoriesName.set(position,editText.getText().toString());
                         images.set(position,((BitmapDrawable)imageView.getDrawable()).getBitmap());
                         arrayAdapter.notifyDataSetChanged();
                     }
@@ -168,7 +179,7 @@ public class storeActivity extends AppCompatActivity {
                 alert.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        categories.remove(position);
+                        categoriesName.remove(position);
                         arrayAdapter.notifyDataSetChanged();
                     }
                 });
@@ -188,7 +199,6 @@ public class storeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
