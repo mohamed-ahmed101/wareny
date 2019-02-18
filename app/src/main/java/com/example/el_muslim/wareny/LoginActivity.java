@@ -323,7 +323,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private static final String KEY_SUPPLIER_NAME = "supplier_name";
         private static final String KEY_SUPPLIER_ID = "supplier_id";
         private static final String KEY_SUPPLIER_PASSWORD = "supplier_password";
-        private static final String BASE_URL = "http://192.168.1.7/warenyphp/";
+        private static final String BASE_URL = "http://192.168.1.3/warenyphp/";
         private int success; private int sup_id;
         String er = "";
 
@@ -375,7 +375,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
                     Intent intent = new Intent(getApplicationContext(),storeActivity.class);
-                    intent.putExtra("supplier_id",sup_id);
+                    intent.putExtra("supplierID",sup_id);
+                    intent.putExtra("supplierName",msupplier);
                     startActivity(intent);
 
             }
