@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.el_muslim.wareny.itemsmodel.addItem;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,7 +37,8 @@ public class catItemsActivity extends AppCompatActivity {
     ImageView imageView;
     EditText editText;
     FloatingActionButton button;
-
+    String categoryName="";
+    String categoryId="";
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
       //  getMenuInflater().inflate(R.menu.addcategory, menu);
@@ -51,7 +54,9 @@ public class catItemsActivity extends AppCompatActivity {
 
 
         final Intent intent = getIntent();
-        getSupportActionBar().setTitle(intent.getStringExtra("title"));
+        categoryName= intent.getStringExtra("categoryName");
+        categoryId = intent.getStringExtra("categoryId");
+        getSupportActionBar().setTitle(categoryName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         images = new ArrayList<Bitmap>();
         items = new ArrayList<String>();
@@ -104,7 +109,6 @@ public class catItemsActivity extends AppCompatActivity {
                         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                         photoPickerIntent.setType("image/*");
                         startActivityForResult(photoPickerIntent,0);
-
                     }
                 });
                 alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
@@ -113,6 +117,8 @@ public class catItemsActivity extends AppCompatActivity {
                         if (!editText.getText().toString().isEmpty()) {
                             items.add(editText.getText().toString());
                             images.add(((BitmapDrawable) imageView.getDrawable()).getBitmap());
+                            new addItem(catItemsActivity.this,editText.getText().toString(),categoryId).execute();
+
                             arrayAdapter.notifyDataSetChanged();
                             Snackbar.make(v, "Item Added", Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();

@@ -2,6 +2,7 @@ package com.example.el_muslim.wareny;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.el_muslim.wareny.categorymodel.AllCategoryFetch;
 import com.example.el_muslim.wareny.categorymodel.CategoryHelperAdd;
+import com.example.el_muslim.wareny.categorymodel.updateOrDeleteCategory;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -43,6 +45,7 @@ public class storeActivity extends AppCompatActivity {
     CategoryHelperAdd categoryHelper;
 
     int sup_id ;
+    String supName;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,8 +104,15 @@ public class storeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
+        final Intent intent = getIntent();
+        sup_id = intent.getIntExtra("supplierID",0);
+        supName = intent.getStringExtra("supplierName");
+        getSupportActionBar().setTitle(supName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
         images = new ArrayList<Bitmap>();
-        sup_id = getIntent().getIntExtra("supplier_id",0);
         categoryHelper = new CategoryHelperAdd(storeActivity.this);
         categoriesLst = (ListView) findViewById(R.id.categoriesListView);
         categoriesName = new ArrayList<String>();
@@ -116,6 +126,9 @@ public class storeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        for (int i=0;i<categoriesName.size();i++){
+            images.add(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.addimage));
+        }
 
         // this.categoriesName = AllCategoryFetch.categoriesName;
        // this.categoriesId = AllCategoryFetch.categoriesId;
@@ -129,7 +142,8 @@ public class storeActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(),catItemsActivity.class);
 
-                intent.putExtra("title",categoriesName.get(position));
+                intent.putExtra("categoryName",categoriesName.get(position));
+                intent.putExtra("categoryId",categoriesId.get(position));
 
                 startActivity(intent);
 
@@ -171,7 +185,10 @@ public class storeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         categoriesName.set(position,editText.getText().toString());
-                        images.set(position,((BitmapDrawable)imageView.getDrawable()).getBitmap());
+                       // images.set(position,((BitmapDrawable)imageView.getDrawable()).getBitmap());
+
+                        new updateOrDeleteCategory(storeActivity.this,categoriesName.get(position),categoriesId.get(position)).execute();
+
                         arrayAdapter.notifyDataSetChanged();
                     }
                 });
@@ -180,6 +197,8 @@ public class storeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         categoriesName.remove(position);
+                        new updateOrDeleteCategory(storeActivity.this,"",categoriesId.get(position)).execute();
+                        categoriesId.remove(position);
                         arrayAdapter.notifyDataSetChanged();
                     }
                 });

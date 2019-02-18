@@ -26,7 +26,7 @@ public class AllCategoryFetch extends AsyncTask<String,String,String> {
     private static final String KEY_CATEGORY_NAME = "category_name";
     private static final String KEY_SUPPLIER_ID = "sup_id";
     private static final String KEY_CATEGORY_ID= "category_id";
-    private static final String BASE_URL = "http://192.168.1.7/warenyphp/";
+    private static final String BASE_URL = "http://192.168.1.3/warenyphp/";
     private String categoryName;
     private int supId;
     private String categoryId;
