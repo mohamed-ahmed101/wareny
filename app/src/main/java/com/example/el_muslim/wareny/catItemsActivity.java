@@ -23,17 +23,21 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.el_muslim.wareny.itemsmodel.addItem;
+import com.example.el_muslim.wareny.itemsmodel.deleteitem;
+import com.example.el_muslim.wareny.itemsmodel.fetchallitems;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class catItemsActivity extends AppCompatActivity {
 
     ListView itemsList;
-    ArrayList<String> items;
+   public static ArrayList<String> itemsName;
+    public static ArrayList<String> itemsId;
     ArrayList<Bitmap> images;
-    customAdapter arrayAdapter;
+ public  static    customAdapter arrayAdapter;
     ImageView imageView;
     EditText editText;
     FloatingActionButton button;
@@ -59,8 +63,17 @@ public class catItemsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(categoryName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         images = new ArrayList<Bitmap>();
-        items = new ArrayList<String>();
-        arrayAdapter = new customAdapter(getApplicationContext(),items,images);
+        itemsName = new ArrayList<String>();
+        itemsId = new ArrayList<String>();
+
+        try {
+            String str = new fetchallitems(catItemsActivity.this,categoryId).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        arrayAdapter = new customAdapter(getApplicationContext(),itemsName,images);
         itemsList = (ListView) findViewById(R.id.lstviewitem);
         button = (FloatingActionButton) findViewById(R.id.additemsbutton);
         itemsList.setAdapter(arrayAdapter);
@@ -69,7 +82,14 @@ public class catItemsActivity extends AppCompatActivity {
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            startActivity(new Intent(getApplicationContext(),itemDetails.class));
+
+               Intent intent = new Intent(getApplicationContext(),itemDetails.class);
+                intent.putExtra("itemID",itemsId.get(position));
+                intent.putExtra("itemName",itemsName.get(position));
+                intent.putExtra("itemPosition",position);
+                startActivity(intent);
+
+
 
             }
         });
@@ -82,7 +102,16 @@ public class catItemsActivity extends AppCompatActivity {
                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                       items.remove(position);
+
+                       try {
+                           String  str = new deleteitem(catItemsActivity.this,itemsId.get(position)).execute().get();
+                       } catch (ExecutionException e) {
+                           e.printStackTrace();
+                       } catch (InterruptedException e) {
+                           e.printStackTrace();
+                       }
+                       itemsName.remove(position);
+                       itemsId.remove(position);
                        arrayAdapter.notifyDataSetChanged();
                    }
                });
@@ -115,7 +144,7 @@ public class catItemsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText.getText().toString().isEmpty()) {
-                            items.add(editText.getText().toString());
+                            itemsName.add(editText.getText().toString());
                             images.add(((BitmapDrawable) imageView.getDrawable()).getBitmap());
                             new addItem(catItemsActivity.this,editText.getText().toString(),categoryId).execute();
 

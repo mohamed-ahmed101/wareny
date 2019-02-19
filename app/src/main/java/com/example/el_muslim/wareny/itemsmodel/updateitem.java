@@ -1,4 +1,5 @@
 package com.example.el_muslim.wareny.itemsmodel;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,44 +7,54 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.example.el_muslim.wareny.LoginActivity;
-import com.example.el_muslim.wareny.catItemsActivity;
 import com.example.el_muslim.wareny.helper.HttpJsonParser;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class addItem extends AsyncTask<String , String , String> {
-
+public class updateitem extends AsyncTask<String , String , String> {
 
     private static final String KEY_SUCCESS = "success";
-    private static final String KEY_CATEGORY_ID = "cat_id";
+    private static final String KEY_ITEM_ID = "item_id";
     private static final String KEY_ITEM_NAME = "item_name";
+    private static final String KEY_ITEM_PRICE = "price";
+    private static final String KEY_ITEM_DESCREIPTION = "description";
+    private static final String KEY_ITEM_SIZES = "sizes";
     private static final String BASE_URL = LoginActivity.UserLoginTask.BASE_URL;
-    private String categoryId;
+    private String itemId;
     private String itemName;
+    private String price;
+    private String description;
+    private String sizes;
     private int success;
     private ProgressDialog pDialog;
     private Context context ;
 
 
-    public addItem(Context context,String itemName , String categoryId){
-        this.categoryId = categoryId;
-        this.context = context;
-        this.itemName = itemName;
-    }
+    public  updateitem(Context c , String itemid,String itName,String pri,String desc,String siz)
+    {
+        this.context = c;
+        this.itemId = itemid;this.itemName=itName;this.price=pri;this.description=desc;this.sizes=siz;
 
+    }
     @Override
     protected String doInBackground(String... strings) {
-
         HttpJsonParser httpJsonParser = new HttpJsonParser();
         Map<String , String> map = new HashMap<String, String>() ;
-        map.put(KEY_CATEGORY_ID ,categoryId);
+        map.put(KEY_ITEM_ID,itemId);
         map.put(KEY_ITEM_NAME,itemName);
-        JSONObject jsonObject = httpJsonParser.makeHttpRequest(BASE_URL + "add_item.php","POST" ,map);
+        map.put(KEY_ITEM_PRICE,price);
+        map.put(KEY_ITEM_DESCREIPTION,description);
+        map.put(KEY_ITEM_SIZES,sizes);
+
+        JSONObject jsonObject = httpJsonParser.makeHttpRequest(BASE_URL + "update_item.php","POST" ,map );
+
         try {
             success = jsonObject.getInt(KEY_SUCCESS);
-            catItemsActivity.itemsId.add(String.valueOf(jsonObject.getInt("itemId")));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -52,29 +63,28 @@ public class addItem extends AsyncTask<String , String , String> {
 
     @Override
     protected void onPreExecute() {
+
         super.onPreExecute();
         pDialog = new ProgressDialog(context);
-        pDialog.setMessage("Adding Item. Please wait...");
+        pDialog.setMessage("Update Your Items. Please wait...");
         pDialog.setIndeterminate(false);
         pDialog.setCancelable(false);
         pDialog.show();
     }
+
     @Override
     protected void onPostExecute(String s) {
         pDialog.dismiss();
         ((Activity) context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (success == 1)
+                if (success == 1 )
                 {
                     Toast.makeText(context,
-                            "New Item Added", Toast.LENGTH_LONG).show();
+                            "Updated item Successfully", Toast.LENGTH_LONG).show();
                 }
-                else {
-                    Toast.makeText(context,
-                            "Some error occurred while adding Your Item",
-                            Toast.LENGTH_LONG).show();
-                }
+
+
             }
         });
     }
