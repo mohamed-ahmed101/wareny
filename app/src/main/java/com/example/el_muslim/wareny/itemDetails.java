@@ -26,21 +26,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.el_muslim.wareny.itemsmodel.getitemdetails;
+import com.example.el_muslim.wareny.itemsmodel.updateitem;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class itemDetails extends AppCompatActivity implements View.OnClickListener {
     static ArrayList<Bitmap> arrayList;
     static imageadapter imgadapter;
     static ViewPager viewPager;
+    String itemId;
+    String itemName;
+    int itemPosition;
     EditText editText;
-    TextView pricetxt;
-    TextView describtiontxt;
-    TextView sizetxt;
+   public static TextView pricetxt;
+    public  static  TextView describtiontxt;
+    public static TextView sizetxt;
+    public  static  TextView nametxt;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -71,11 +79,27 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
 
+        final Intent intent = getIntent();
+        itemId = intent.getStringExtra("itemID");
+        itemName = intent.getStringExtra("itemName");
+        itemPosition = intent.getIntExtra("itemPosition",-1);
+        getSupportActionBar().setTitle(itemName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         pricetxt = (TextView) findViewById(R.id.pricetextview);
         describtiontxt = (TextView) findViewById(R.id.descriptiontextview);
         sizetxt = (TextView) findViewById(R.id.sizestextview);
+        nametxt = (TextView) findViewById(R.id.nametextview);
 
+        try {
+            String str = new getitemdetails(itemDetails.this,itemId).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         arrayList = new ArrayList<Bitmap>();
         imgadapter = new imageadapter(this);
@@ -91,6 +115,7 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         pricetxt.setOnClickListener(this);
         describtiontxt.setOnClickListener(this);
         sizetxt.setOnClickListener(this);
+        nametxt.setOnClickListener(this);
 
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
@@ -152,7 +177,7 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(final View v) {
-        if (v.getId() == R.id.pricetextview || v.getId() == R.id.descriptiontextview || v.getId() == R.id.sizestextview) {
+        if (v.getId() == R.id.pricetextview || v.getId() == R.id.descriptiontextview || v.getId() == R.id.sizestextview ||v.getId() == R.id.nametextview) {
             AlertDialog.Builder alert = new AlertDialog.Builder(itemDetails.this);
             editText = new EditText(this);
             alert.setView(editText);
@@ -167,7 +192,10 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
                     else {
                         ((TextView) v).setText(editText.getText());
                     }
-
+                    new updateitem(itemDetails.this,itemId,nametxt.getText().toString(),pricetxt.getText().toString(),describtiontxt.getText().toString(),sizetxt.getText().toString()).execute();
+                    getSupportActionBar().setTitle(nametxt.getText().toString());
+                    catItemsActivity.itemsName.set(itemPosition,nametxt.getText().toString());
+                    catItemsActivity.arrayAdapter.notifyDataSetChanged();
                 }
             });
             alert.setNegativeButton("cancel", null);

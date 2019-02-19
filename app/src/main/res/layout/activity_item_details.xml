@@ -31,13 +31,22 @@
         app:tabIndicatorColor="@color/colorAccent"
         android:layout_alignParentLeft="true" />
 
+
+    <TextView
+        android:id="@+id/nametextview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tablayout"
+        android:hint="Name"
+        android:textSize="48dp" />
+
     <TextView
         android:id="@+id/pricetextview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tablayout"
+        android:layout_below="@+id/nametextview"
         android:hint="Price"
-        android:textSize="50dp" />
+        android:textSize="45dp" />
 
     <TextView
         android:id="@+id/descriptiontextview"
@@ -45,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/pricetextview"
         android:hint="Description"
-        android:textSize="30dp" />
+        android:textSize="35dp" />
 
     <TextView
         android:id="@+id/sizestextview"
