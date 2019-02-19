@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.el_muslim.wareny.LoginActivity;
 import com.example.el_muslim.wareny.customAdapter;
 import com.example.el_muslim.wareny.helper.HttpJsonParser;
 import com.example.el_muslim.wareny.storeActivity;
@@ -26,7 +27,7 @@ public class AllCategoryFetch extends AsyncTask<String,String,String> {
     private static final String KEY_CATEGORY_NAME = "category_name";
     private static final String KEY_SUPPLIER_ID = "sup_id";
     private static final String KEY_CATEGORY_ID= "category_id";
-    private static final String BASE_URL = "http://192.168.1.3/warenyphp/";
+    private static final String BASE_URL = LoginActivity.UserLoginTask.BASE_URL;
     private String categoryName;
     private int supId;
     private String categoryId;

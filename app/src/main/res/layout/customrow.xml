@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:text="Header"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp" />
     </LinearLayout>
 

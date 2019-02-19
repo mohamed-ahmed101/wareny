@@ -8,7 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.el_muslim.wareny.LoginActivity;
 import com.example.el_muslim.wareny.helper.HttpJsonParser;
+import com.example.el_muslim.wareny.storeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +23,7 @@ public class CategoryHelperAdd extends AsyncTask <String , String , String>  {
     private static final String KEY_SUCCESS = "success";
     private static final String KEY_CATEGORY_NAME = "category_name";
     private static final String KEY_SUPPLIER_ID = "sup_id";
-    private static final String BASE_URL = "http://192.168.1.3/warenyphp/";
+    private static final String BASE_URL = LoginActivity.UserLoginTask.BASE_URL;
     private String categoryName;
     private String supId;
     private int success;
@@ -66,6 +68,7 @@ public class CategoryHelperAdd extends AsyncTask <String , String , String>  {
 
         try {
             success = jsonObject.getInt(KEY_SUCCESS);
+            storeActivity.categoriesId.add(String.valueOf(jsonObject.getInt("categoryId")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
