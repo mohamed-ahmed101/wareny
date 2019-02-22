@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,11 +28,18 @@ import android.widget.Toast;
 import com.example.el_muslim.wareny.categorymodel.AllCategoryFetch;
 import com.example.el_muslim.wareny.categorymodel.CategoryHelperAdd;
 import com.example.el_muslim.wareny.categorymodel.updateOrDeleteCategory;
+import com.example.el_muslim.wareny.helper.HttpJsonParser;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+
+import static com.example.el_muslim.wareny.LoginActivity.UserLoginTask.BASE_URL;
 
 public class storeActivity extends AppCompatActivity {
 
@@ -100,6 +108,14 @@ public class storeActivity extends AppCompatActivity {
                 return true ;
     }
 
+    public String getStringImage(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +125,33 @@ public class storeActivity extends AppCompatActivity {
         supName = intent.getStringExtra("supplierName");
         getSupportActionBar().setTitle(supName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
+
+
+      //  String uploadImage = getStringImage(BitmapFactory.decodeResource(getResources(),R.drawable.shoes));
+      //  HttpJsonParser httpJsonParser = new HttpJsonParser();
+     //   HashMap<String,String> data = new HashMap<>();
+     //   data.put("image_name", uploadImage);
+     //   data.put("item_id", "1");
+     //   JSONObject jsonObject = httpJsonParser.makeHttpRequest(BASE_URL + "add_image.php","POST" ,data );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

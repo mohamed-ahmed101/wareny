@@ -65,7 +65,6 @@ public class CategoryHelperAdd extends AsyncTask <String , String , String>  {
         map.put(KEY_CATEGORY_NAME ,categoryName);
         map.put(KEY_SUPPLIER_ID,supId);
         JSONObject jsonObject = httpJsonParser.makeHttpRequest(BASE_URL + "add_category.php","POST" ,map );
-
         try {
             success = jsonObject.getInt(KEY_SUCCESS);
             storeActivity.categoriesId.add(String.valueOf(jsonObject.getInt("categoryId")));
