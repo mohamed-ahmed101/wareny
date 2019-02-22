@@ -181,7 +181,14 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
             AlertDialog.Builder alert = new AlertDialog.Builder(itemDetails.this);
             editText = new EditText(this);
             alert.setView(editText);
-            editText.setText(((TextView) v).getText().toString().split(" ")[0]);
+
+            if (v.getId() == R.id.pricetextview) {
+                editText.setText(((TextView) v).getText().toString().split(" ")[0]);
+            }
+            else{
+                editText.setText(((TextView) v).getText().toString());
+            }
+
             editText.setSelection(editText.getText().length());
             alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                 @Override
