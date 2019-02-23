@@ -16,6 +16,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,16 +27,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.el_muslim.wareny.helper.HttpJsonParser;
 import com.example.el_muslim.wareny.itemsmodel.getitemdetails;
 import com.example.el_muslim.wareny.itemsmodel.updateitem;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+
+import static com.example.el_muslim.wareny.LoginActivity.UserLoginTask.BASE_URL;
 
 public class itemDetails extends AppCompatActivity implements View.OnClickListener {
     static ArrayList<Bitmap> arrayList;
@@ -58,6 +66,7 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         return super.onCreateOptionsMenu(menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -68,7 +77,10 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         // if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
         //      startActivityForResult(takePictureIntent, 0);
    // }
-        openBackCamera();
+       openBackCamera();
+
+
+
 
 
         return true;
@@ -93,8 +105,17 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         sizetxt = (TextView) findViewById(R.id.sizestextview);
         nametxt = (TextView) findViewById(R.id.nametextview);
 
-        try {
+      /*  try {
             String str = new getitemdetails(itemDetails.this,itemId).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+
+        try {
+            String str = new addimage(itemDetails.this).execute().get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
