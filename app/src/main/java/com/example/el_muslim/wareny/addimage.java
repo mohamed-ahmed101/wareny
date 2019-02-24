@@ -60,6 +60,7 @@ Context context ;
             @Override
             public void processFinish(String s) {
                 itemDetails.imagesName.add(s);
+                //ya 5wl
             }
         });
 
