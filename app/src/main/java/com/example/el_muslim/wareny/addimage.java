@@ -3,10 +3,12 @@ package com.example.el_muslim.wareny;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.util.Base64;
 
 import com.example.el_muslim.wareny.helper.HttpJsonParser;
+import com.kosalgeek.android.photoutil.ImageBase64;
 
 import org.json.JSONObject;
 
@@ -25,10 +27,14 @@ public class addimage extends AsyncTask<String , String , String> {
 Context context ;
     private static final String KEY_SUCCESS = "image_name";
     private static final String KEY_CATEGORY_ID = "item_id";
- public  addimage(Context c)
+
+
+
+     public  addimage(Context c)
  {
      this.context = c;
  }
+
     public String getStringImage(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -38,47 +44,24 @@ Context context ;
     }
     @Override
     protected String doInBackground(String... strings) {
-           String uploadImage = getStringImage(BitmapFactory.decodeResource(context.getResources(),R.drawable.addimage));
-        String data = null;
-        try {
-            data = URLEncoder.encode("image_name", "UTF-8")
-                    + "=" + URLEncoder.encode(uploadImage, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
-        try {
-            data += "&" + URLEncoder.encode("item_id", "UTF-8") + "="
-                    + URLEncoder.encode("13", "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.shoes);
 
-        try {
+        String s = ImageBase64.encode(bitmap);
 
-            // Defined URL  where to send data
-            URL url = new URL(BASE_URL + "save_image_to_database.php");
-
-            // Send POST data request
-
-            URLConnection conn = (HttpURLConnection) url.openConnection();
-            ((HttpURLConnection) conn).setRequestMethod("POST");
-            conn.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(data);
-            wr.flush();
-        } catch(Exception ex)
-        {
-
-        }
-
-      /*  String uploadImage = getStringImage(BitmapFactory.decodeResource(context.getResources(),R.drawable.shoes));
-        String id = "13";
         HttpJsonParser httpJsonP = new HttpJsonParser();
+
+
+
         HashMap<String,String> data = new HashMap<>();
-         data.put(KEY_SUCCESS, uploadImage);
-          data.put(KEY_CATEGORY_ID,id);
-        JSONObject jsonO = httpJsonP.makeHttpRequest(BASE_URL + "save_image_to_database.php","POST" ,data );*/
+        data.put("image_src", s);
+        JSONObject jsonO = httpJsonP.makeHttpRequest(BASE_URL + "save_image_to_database.php","POST" ,data );
+
+
+
+
+
+         int x =0;
         return null;
     }
 
