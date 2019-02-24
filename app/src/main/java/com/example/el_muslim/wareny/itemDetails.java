@@ -28,13 +28,22 @@ import android.widget.Toast;
 
 import com.example.el_muslim.wareny.itemsmodel.getitemdetails;
 import com.example.el_muslim.wareny.itemsmodel.updateitem;
+import com.kosalgeek.android.photoutil.ImageBase64;
+import com.kosalgeek.genasync12.AsyncResponse;
+import com.kosalgeek.genasync12.EachExceptionsHandler;
+import com.kosalgeek.genasync12.PostResponseAsyncTask;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 public class itemDetails extends AppCompatActivity implements View.OnClickListener {
@@ -87,7 +96,52 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+       try {
+            String stgfr = new addimage(itemDetails.this).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.shoes);
+
+        String s = ImageBase64.encode(bitmap);
+
+        HashMap<String,String> data = new HashMap<>();
+        data.put("image_src", s);
+        data.put("image_name", "shoes");
+        data.put("item_id", "14");
+
+        PostResponseAsyncTask task = new PostResponseAsyncTask(itemDetails.this, data, new AsyncResponse() {
+            @Override
+            public void processFinish(String s) {
+
+            }
+        });
+
+        task.execute("http://192.168.1.2/warenyphp/add_image_to_data_base.php");
+        task.setEachExceptionsHandler(new EachExceptionsHandler() {
+            @Override
+            public void handleIOException(IOException e) {
+
+            }
+
+            @Override
+            public void handleMalformedURLException(MalformedURLException e) {
+
+            }
+
+            @Override
+            public void handleProtocolException(ProtocolException e) {
+
+            }
+
+            @Override
+            public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+
+            }
+        });
         pricetxt = (TextView) findViewById(R.id.pricetextview);
         describtiontxt = (TextView) findViewById(R.id.descriptiontextview);
         sizetxt = (TextView) findViewById(R.id.sizestextview);
