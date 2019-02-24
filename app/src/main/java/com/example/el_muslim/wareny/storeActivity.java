@@ -108,13 +108,7 @@ public class storeActivity extends AppCompatActivity {
                 return true ;
     }
 
-    public String getStringImage(Bitmap bmp){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,29 +119,6 @@ public class storeActivity extends AppCompatActivity {
         supName = intent.getStringExtra("supplierName");
         getSupportActionBar().setTitle(supName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
-
-
-      //  String uploadImage = getStringImage(BitmapFactory.decodeResource(getResources(),R.drawable.shoes));
-      //  HttpJsonParser httpJsonParser = new HttpJsonParser();
-     //   HashMap<String,String> data = new HashMap<>();
-     //   data.put("image_name", uploadImage);
-     //   data.put("item_id", "1");
-     //   JSONObject jsonObject = httpJsonParser.makeHttpRequest(BASE_URL + "add_image.php","POST" ,data );
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

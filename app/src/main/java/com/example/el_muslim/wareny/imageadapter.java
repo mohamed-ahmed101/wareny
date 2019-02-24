@@ -60,6 +60,8 @@ public class imageadapter extends PagerAdapter {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        new deleteitemimage(context,itemDetails.itemId,itemDetails.imagesName.get(position)).execute();
+                        itemDetails.imagesName.remove(position);
                         itemDetails.arrayList.remove(position);
                         itemDetails.viewPager.setAdapter(itemDetails.imgadapter);
                         itemDetails.imgadapter.notifyDataSetChanged();
