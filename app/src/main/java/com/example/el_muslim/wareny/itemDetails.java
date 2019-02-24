@@ -31,17 +31,20 @@ import com.example.el_muslim.wareny.helper.HttpJsonParser;
 import com.example.el_muslim.wareny.itemsmodel.getitemdetails;
 import com.example.el_muslim.wareny.itemsmodel.updateitem;
 import com.kosalgeek.android.photoutil.ImageBase64;
+import com.kosalgeek.android.photoutil.ImageLoader;
 import com.kosalgeek.genasync12.AsyncResponse;
 import com.kosalgeek.genasync12.EachExceptionsHandler;
 import com.kosalgeek.genasync12.PostResponseAsyncTask;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -54,10 +57,11 @@ import java.util.concurrent.ExecutionException;
 import static com.example.el_muslim.wareny.LoginActivity.UserLoginTask.BASE_URL;
 
 public class itemDetails extends AppCompatActivity implements View.OnClickListener {
-    static ArrayList<Bitmap> arrayList;
-    static imageadapter imgadapter;
+    public static ArrayList<Bitmap> arrayList;
+    public static imageadapter imgadapter;
+    public static ArrayList<String> imagesName ;
     static ViewPager viewPager;
-    String itemId;
+  public static   String itemId;
     String itemName;
     int itemPosition;
     EditText editText;
@@ -105,75 +109,25 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         itemPosition = intent.getIntExtra("itemPosition",-1);
         getSupportActionBar().setTitle(itemName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        imagesName = new ArrayList<String>();
+
+         //Bitmap myBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.kp);
+         //new addimage(itemDetails.this,itemId,myBitmap);
 
 
-       try {
-            String stgfr = new addimage(itemDetails.this).execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.shoes);
-
-        String s = ImageBase64.encode(bitmap);
-
-        HashMap<String,String> data = new HashMap<>();
-        data.put("image_src", s);
-        data.put("image_name", "shoes");
-        data.put("item_id", "14");
-
-        PostResponseAsyncTask task = new PostResponseAsyncTask(itemDetails.this, data, new AsyncResponse() {
-            @Override
-            public void processFinish(String s) {
-
-            }
-        });
-
-        task.execute("http://192.168.1.2/warenyphp/add_image_to_data_base.php");
-        task.setEachExceptionsHandler(new EachExceptionsHandler() {
-            @Override
-            public void handleIOException(IOException e) {
-
-            }
-
-            @Override
-            public void handleMalformedURLException(MalformedURLException e) {
-
-            }
-
-            @Override
-            public void handleProtocolException(ProtocolException e) {
-
-            }
-
-            @Override
-            public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-
-            }
-        });
         pricetxt = (TextView) findViewById(R.id.pricetextview);
         describtiontxt = (TextView) findViewById(R.id.descriptiontextview);
         sizetxt = (TextView) findViewById(R.id.sizestextview);
         nametxt = (TextView) findViewById(R.id.nametextview);
 
-      /*  try {
+        try {
             String str = new getitemdetails(itemDetails.this,itemId).execute().get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
-
-
-        try {
-            String str = new addimage(itemDetails.this).execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
+
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         arrayList = new ArrayList<Bitmap>();
         imgadapter = new imageadapter(this);
@@ -194,6 +148,14 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager, true);
+
+        try {
+            String strr = new fetchitemimages(itemDetails.this,itemId).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -226,15 +188,14 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
               //  imgadapter.notifyDataSetChanged();
 
                 File imgFile = new  File(pictureImagePath);
-                if(imgFile.exists()){
+                    if(imgFile.exists()){
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate(90);
-                    Bitmap rotatedBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
-
-
-                      arrayList.add(rotatedBitmap);
+                  //  Matrix matrix = new Matrix();
+                  //  matrix.postRotate(90);
+                   // Bitmap rotatedBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
+                       // new addimage(itemDetails.this,itemId,myBitmap);
+                      arrayList.add(myBitmap);
                       imgadapter.notifyDataSetChanged();
 
                 }

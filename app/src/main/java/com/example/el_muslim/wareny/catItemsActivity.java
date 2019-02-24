@@ -83,6 +83,7 @@ public class catItemsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
                Intent intent = new Intent(getApplicationContext(),itemDetails.class);
                 intent.putExtra("itemID",itemsId.get(position));
                 intent.putExtra("itemName",itemsName.get(position));
