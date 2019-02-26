@@ -4,9 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -16,45 +13,24 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.el_muslim.wareny.helper.HttpJsonParser;
+import com.example.el_muslim.wareny.imagehelper.addimage;
+import com.example.el_muslim.wareny.imagehelper.fetchitemimages;
 import com.example.el_muslim.wareny.itemsmodel.getitemdetails;
 import com.example.el_muslim.wareny.itemsmodel.updateitem;
-import com.kosalgeek.android.photoutil.ImageBase64;
 import com.kosalgeek.android.photoutil.ImageLoader;
-import com.kosalgeek.genasync12.AsyncResponse;
-import com.kosalgeek.genasync12.EachExceptionsHandler;
-import com.kosalgeek.genasync12.PostResponseAsyncTask;
 
-import org.json.JSONObject;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
-
-import static com.example.el_muslim.wareny.LoginActivity.UserLoginTask.BASE_URL;
 
 public class itemDetails extends AppCompatActivity implements View.OnClickListener {
     public static ArrayList<Bitmap> arrayList;
@@ -72,13 +48,11 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.cameraicon, menu);
-
+        if(!customerActivity.USER) {
+            getMenuInflater().inflate(R.menu.cameraicon, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -90,11 +64,6 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         //      startActivityForResult(takePictureIntent, 0);
    // }
        openBackCamera();
-
-
-
-
-
         return true;
     }
 
@@ -111,8 +80,7 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         imagesName = new ArrayList<String>();
 
-         //Bitmap myBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.kp);
-         //new addimage(itemDetails.this,itemId,myBitmap);
+
 
 
         pricetxt = (TextView) findViewById(R.id.pricetextview);
@@ -140,11 +108,12 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
             });
        // arrayList.add(BitmapFactory.decodeResource(getResources(),R.drawable.x));
        // imgadapter.notifyDataSetChanged();
-        pricetxt.setOnClickListener(this);
-        describtiontxt.setOnClickListener(this);
-        sizetxt.setOnClickListener(this);
-        nametxt.setOnClickListener(this);
-
+        if(!customerActivity.USER) {
+            pricetxt.setOnClickListener(this);
+            describtiontxt.setOnClickListener(this);
+            sizetxt.setOnClickListener(this);
+            nametxt.setOnClickListener(this);
+        }
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager, true);
@@ -189,14 +158,22 @@ public class itemDetails extends AppCompatActivity implements View.OnClickListen
 
                 File imgFile = new  File(pictureImagePath);
                     if(imgFile.exists()){
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                   // Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        Bitmap myBitmap = ImageLoader.init().from(pictureImagePath).requestSize(1024,1024).getBitmap();
+                        Bitmap myBitmap2 = ImageLoader.init().from(pictureImagePath).requestSize(1024,1024).getBitmap();
 
-                  //  Matrix matrix = new Matrix();
-                  //  matrix.postRotate(90);
-                   // Bitmap rotatedBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
+
+
                        // new addimage(itemDetails.this,itemId,myBitmap);
-                      arrayList.add(myBitmap);
-                      imgadapter.notifyDataSetChanged();
+                       // Bitmap myBitmap2 = BitmapFactory.decodeResource(getResources(),R.drawable.kp);
+
+
+                            arrayList.add(myBitmap);
+                            imgadapter.notifyDataSetChanged();
+                            new addimage(itemDetails.this, itemId, myBitmap2);
+
+
+                      imgFile.delete();
 
                 }
 

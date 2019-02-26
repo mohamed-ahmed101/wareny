@@ -1,4 +1,4 @@
-package com.example.el_muslim.wareny;
+package com.example.el_muslim.wareny.imagehelper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,8 +6,11 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.widget.Toast;
 
+import com.example.el_muslim.wareny.LoginActivity;
 import com.example.el_muslim.wareny.helper.HttpJsonParser;
+import com.example.el_muslim.wareny.itemDetails;
 import com.kosalgeek.android.photoutil.ImageBase64;
 import com.kosalgeek.genasync12.AsyncResponse;
 import com.kosalgeek.genasync12.EachExceptionsHandler;
@@ -60,7 +63,6 @@ Context context ;
             @Override
             public void processFinish(String s) {
                 itemDetails.imagesName.add(s);
-                
             }
         });
 
@@ -68,22 +70,22 @@ Context context ;
         task.setEachExceptionsHandler(new EachExceptionsHandler() {
             @Override
             public void handleIOException(IOException e) {
-
+                Toast.makeText(context,e.toString(),Toast.LENGTH_SHORT);
             }
 
             @Override
             public void handleMalformedURLException(MalformedURLException e) {
-
+                Toast.makeText(context,e.toString(),Toast.LENGTH_SHORT);
             }
 
             @Override
             public void handleProtocolException(ProtocolException e) {
-
+                Toast.makeText(context,e.toString(),Toast.LENGTH_SHORT);
             }
 
             @Override
             public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-
+                Toast.makeText(context,e.toString(),Toast.LENGTH_SHORT);
             }
         });
  }

@@ -1,4 +1,4 @@
-package com.example.el_muslim.wareny;
+package com.example.el_muslim.wareny.imagehelper;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.Toast;
 
+import com.example.el_muslim.wareny.LoginActivity;
 import com.example.el_muslim.wareny.helper.HttpJsonParser;
 
 import org.json.JSONArray;
