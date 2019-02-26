@@ -1,5 +1,6 @@
 package com.example.el_muslim.wareny;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,6 +52,7 @@ public class catItemsActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,10 @@ public class catItemsActivity extends AppCompatActivity {
         button = (FloatingActionButton) findViewById(R.id.additemsbutton);
         itemsList.setAdapter(arrayAdapter);
 
-
+        if(customerActivity.USER) {
+            button.setVisibility(View.INVISIBLE);
+            button.setEnabled(false);
+        }
         itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -94,73 +99,74 @@ public class catItemsActivity extends AppCompatActivity {
 
             }
         });
+        if(!customerActivity.USER) {
+            itemsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(catItemsActivity.this);
+                    builder.setTitle("Are You Sure To Delete This Item");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-       itemsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-           @Override
-           public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-               AlertDialog.Builder builder = new AlertDialog.Builder(catItemsActivity.this);
-               builder.setTitle("Are You Sure To Delete This Item");
-               builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                   @Override
-                   public void onClick(DialogInterface dialog, int which) {
-
-                       try {
-                           String  str = new deleteitem(catItemsActivity.this,itemsId.get(position)).execute().get();
-                       } catch (ExecutionException e) {
-                           e.printStackTrace();
-                       } catch (InterruptedException e) {
-                           e.printStackTrace();
-                       }
-                       itemsName.remove(position);
-                       itemsId.remove(position);
-                       arrayAdapter.notifyDataSetChanged();
-                   }
-               });
-               builder.setNegativeButton("no",null);
-               builder.create();
-               builder.show();
-               return true;
-           }
-       });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(catItemsActivity.this);
-                alert.setTitle("Add New Item");
-                View vv = LayoutInflater.from(catItemsActivity.this).inflate(R.layout.dialoglayout, null);
-                alert.setView(vv);
-                imageView = (ImageView) vv.findViewById(R.id.imageView);
-                editText = (EditText) vv.findViewById(R.id.textView);
-                imageView.setImageResource(R.drawable.addimage);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                        photoPickerIntent.setType("image/*");
-                        startActivityForResult(photoPickerIntent,0);
-                    }
-                });
-                alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!editText.getText().toString().isEmpty()) {
-                            itemsName.add(editText.getText().toString());
-                            images.add(((BitmapDrawable) imageView.getDrawable()).getBitmap());
-                            new addItem(catItemsActivity.this,editText.getText().toString(),categoryId).execute();
-
+                            try {
+                                String str = new deleteitem(catItemsActivity.this, itemsId.get(position)).execute().get();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            itemsName.remove(position);
+                            itemsId.remove(position);
                             arrayAdapter.notifyDataSetChanged();
-                            Snackbar.make(v, "Item Added", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Enter Category Name", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
-                alert.create();
-                alert.show();
-            }
-        });
+                    });
+                    builder.setNegativeButton("no", null);
+                    builder.create();
+                    builder.show();
+                    return true;
+                }
+            });
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(catItemsActivity.this);
+                    alert.setTitle("Add New Item");
+                    View vv = LayoutInflater.from(catItemsActivity.this).inflate(R.layout.dialoglayout, null);
+                    alert.setView(vv);
+                    imageView = (ImageView) vv.findViewById(R.id.imageView);
+                    editText = (EditText) vv.findViewById(R.id.textView);
+                    imageView.setImageResource(R.drawable.addimage);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                            photoPickerIntent.setType("image/*");
+                            startActivityForResult(photoPickerIntent, 0);
+                        }
+                    });
+                    alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!editText.getText().toString().isEmpty()) {
+                                itemsName.add(editText.getText().toString());
+                                images.add(((BitmapDrawable) imageView.getDrawable()).getBitmap());
+                                new addItem(catItemsActivity.this, editText.getText().toString(), categoryId).execute();
+
+                                arrayAdapter.notifyDataSetChanged();
+                                Snackbar.make(v, "Item Added", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Enter Category Name", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    alert.create();
+                    alert.show();
+                }
+            });
+        }
     }
 
     @Override

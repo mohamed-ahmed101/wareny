@@ -1,4 +1,4 @@
-package com.example.el_muslim.wareny;
+package com.example.el_muslim.wareny.imagehelper;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,7 +9,9 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.Toast;
 
+import com.example.el_muslim.wareny.LoginActivity;
 import com.example.el_muslim.wareny.helper.HttpJsonParser;
+import com.example.el_muslim.wareny.itemDetails;
 import com.kosalgeek.android.photoutil.ImageBase64;
 
 import org.json.JSONArray;
@@ -102,7 +104,7 @@ public class fetchitemimages extends AsyncTask<String , String , String> {
                 }
                 else {
                     Toast.makeText(context,
-                            "Some error occurred while Fetching Your Images",
+                            "No images for this item",
                             Toast.LENGTH_LONG).show();
                 }
             }

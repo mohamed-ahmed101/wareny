@@ -58,11 +58,11 @@ public class storeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.addcategory, menu);
-
+        if(!customerActivity.USER) {
+            getMenuInflater().inflate(R.menu.addcategory, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
-
     @SuppressLint("WrongViewCast")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -108,22 +108,15 @@ public class storeActivity extends AppCompatActivity {
                 return true ;
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
         final Intent intent = getIntent();
-        sup_id = intent.getIntExtra("supplierID",0);
+        sup_id = intent.getIntExtra("supplierID", 0);
         supName = intent.getStringExtra("supplierName");
         getSupportActionBar().setTitle(supName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
-
-
 
 
         images = new ArrayList<Bitmap>();
@@ -133,20 +126,20 @@ public class storeActivity extends AppCompatActivity {
         categoriesId = new ArrayList<String>();
 
         try {
-            String r = new AllCategoryFetch(storeActivity.this,sup_id).execute().get();
+            String r = new AllCategoryFetch(storeActivity.this, sup_id).execute().get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        for (int i=0;i<categoriesName.size();i++){
-            images.add(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.addimage));
+        for (int i = 0; i < categoriesName.size(); i++) {
+            images.add(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.addimage));
         }
 
         // this.categoriesName = AllCategoryFetch.categoriesName;
-       // this.categoriesId = AllCategoryFetch.categoriesId;
-        arrayAdapter = new customAdapter(this,categoriesName,images);
+        // this.categoriesId = AllCategoryFetch.categoriesId;
+        arrayAdapter = new customAdapter(this, categoriesName, images);
         categoriesLst.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
         //click to add items
@@ -154,10 +147,10 @@ public class storeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(getApplicationContext(),catItemsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), catItemsActivity.class);
 
-                intent.putExtra("categoryName",categoriesName.get(position));
-                intent.putExtra("categoryId",categoriesId.get(position));
+                intent.putExtra("categoryName", categoriesName.get(position));
+                intent.putExtra("categoryId", categoriesId.get(position));
 
                 startActivity(intent);
 
@@ -166,9 +159,8 @@ public class storeActivity extends AppCompatActivity {
         });
 
 
-
-
         //long click to update or delete
+        if(!customerActivity.USER) {
         categoriesLst.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -176,11 +168,11 @@ public class storeActivity extends AppCompatActivity {
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(storeActivity.this);
 
-                View v = LayoutInflater.from(storeActivity.this).inflate(R.layout.dialoglayout,null);
+                View v = LayoutInflater.from(storeActivity.this).inflate(R.layout.dialoglayout, null);
                 alert.setView(v);
 
                 imageView = (ImageView) v.findViewById(R.id.imageView);
-                editText = (EditText) v.findViewById(R.id.textView) ;
+                editText = (EditText) v.findViewById(R.id.textView);
 
                 imageView.setImageBitmap(images.get(position));
                 imageView.setOnClickListener(new View.OnClickListener() {
@@ -188,7 +180,7 @@ public class storeActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                         photoPickerIntent.setType("image/*");
-                        startActivityForResult(photoPickerIntent,0);
+                        startActivityForResult(photoPickerIntent, 0);
                     }
                 });
 
@@ -198,10 +190,10 @@ public class storeActivity extends AppCompatActivity {
                 alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        categoriesName.set(position,editText.getText().toString());
-                       // images.set(position,((BitmapDrawable)imageView.getDrawable()).getBitmap());
+                        categoriesName.set(position, editText.getText().toString());
+                        // images.set(position,((BitmapDrawable)imageView.getDrawable()).getBitmap());
 
-                        new updateOrDeleteCategory(storeActivity.this,categoriesName.get(position),categoriesId.get(position)).execute();
+                        new updateOrDeleteCategory(storeActivity.this, categoriesName.get(position), categoriesId.get(position)).execute();
 
                         arrayAdapter.notifyDataSetChanged();
                     }
@@ -211,12 +203,11 @@ public class storeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         categoriesName.remove(position);
-                        new updateOrDeleteCategory(storeActivity.this,"",categoriesId.get(position)).execute();
+                        new updateOrDeleteCategory(storeActivity.this, "", categoriesId.get(position)).execute();
                         categoriesId.remove(position);
                         arrayAdapter.notifyDataSetChanged();
                     }
                 });
-
 
 
                 alert.setTitle("Edit");
@@ -226,7 +217,7 @@ public class storeActivity extends AppCompatActivity {
             }
         });
 
-
+    }
     }
 
     @Override
